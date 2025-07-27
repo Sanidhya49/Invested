@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+google-cloud-firestore
+google-auth
+firebase-admin
+requests
+pydantic
+pyjwt
+cryptography
+python-dotenv

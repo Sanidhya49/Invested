@@ -1,0 +1,198 @@
+
+# ===================================================================
+# Invested - Universal .gitignore for Flutter (Frontend) & Python (Backend)
+# ===================================================================
+
+# ===========================================
+# SECURITY & CREDENTIALS
+# ===========================================
+
+# Environment variables
+*.env
+.env
+.env.*
+!.env.example
+
+# Service Account and Key files
+**/invested-hackathon-firebase-adminsdk-*.json
+**/invested-hackathon-vertex-ai-key.json
+**/*-firebase-adminsdk-*.json
+**/*-vertex-ai-key.json
+**/*-service-account.json
+**/*-service-account-key.json
+**/google-services.json
+**/GoogleService-Info.plist
+**/secrets.json
+**/config.json
+**/credentials.json
+**/auth.json
+**/token.json
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.csr
+
+# ===========================================
+# BUILD & COMPILATION
+# ===========================================
+
+# General
+**/build/
+**/dist/
+**/target/
+**/out/
+
+# Flutter
+**/build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+**/.pub/
+
+# Android
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/android/captures/
+**/android/key.properties
+**/.gradle/
+**/gradle/
+**/gradlew
+**/gradlew.bat
+**/local.properties
+
+# iOS
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/ephemeral/
+**/ios/Runner.xcworkspace/
+**/ios/Runner.xcodeproj/project.xcworkspace/
+
+# macOS
+**/macos/Pods/
+**/macos/.symlinks/
+**/macos/Flutter/ephemeral/
+**/macos/Runner.xcworkspace/
+
+# Linux
+**/linux/flutter/ephemeral/
+
+# Windows
+**/windows/flutter/ephemeral/
+
+# ===========================================
+# PYTHON
+# ===========================================
+
+# Environments
+**/.venv/
+**/venv/
+**/env/
+**/ENV/
+
+# Caches
+**/__pycache__/
+**/.mypy_cache/
+**/.pytest_cache/
+
+# Other
+**/*.py[cod]
+**/*$py.class
+**/*.so
+
+# ===========================================
+# DEPENDENCIES & PACKAGES
+# ===========================================
+
+# Node.js
+**/node_modules/
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# Python packages
+**/*.egg-info/
+**/.installed.cfg
+**/*.egg
+
+# ===========================================
+# IDE & EDITOR FILES
+# ===========================================
+
+# VS Code
+**/.vscode/
+**/*.code-workspace
+
+# IntelliJ IDEA / Android Studio
+**/.idea/
+**/*.iml
+**/*.ipr
+**/*.iws
+**/.android/
+**/.gradle/
+
+# Xcode
+**/*.xcworkspace/
+**/*.xcodeproj/
+**/*.xcuserstate
+
+# Sublime Text
+**/*.sublime-project
+**/*.sublime-workspace
+
+# Vim / Emacs
+**/*.swp
+**/*.swo
+**/*~
+**/#*#
+**/.#*
+**/.emacs.desktop
+**/.emacs.desktop.lock
+
+
+# ===========================================
+# OS-GENERATED FILES
+# ===========================================
+
+# macOS
+**/.DS_Store
+**/.DS_Store?
+**/._*
+**/.Spotlight-V100
+**/.Trashes
+
+# Windows
+**/Thumbs.db
+**/ehthumbs.db
+**/Desktop.ini
+
+# Linux
+**/*~
+**/.fuse_hidden*
+**/.directory
+**/.Trash-*
+**/.nfs*
+
+# ===========================================
+# LOGS & OTHER
+# ===========================================
+
+# Logs
+**/logs
+**/*.log
+
+# Backups
+**/*.bak
+**/*.backup
+**/*.old
+**/*.orig
+**/*.save
+**/*.tmp
+**/*.temp
+**/migrate_working_dir/
+**/test_data_dir/
+**/app.*.symbols
+**/app.*.map.json 
