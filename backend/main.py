@@ -24,7 +24,7 @@ firebase_admin.initialize_app(cred)
 SERVICE_ACCOUNT_KEY_PATH = os.path.join(os.path.dirname(__file__), "invested-hackathon-vertex-ai-key.json")
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = SERVICE_ACCOUNT_KEY_PATH
 GCP_PROJECT_ID = "invested-hackathon"
-GCP_LOCATION = "us-central1
+GCP_LOCATION = "us-central1"
 vertexai.init(project=GCP_PROJECT_ID, location=GCP_LOCATION)
 
 MOCK_SERVER_BASE_URL = "http://10.0.2.2:8080"
