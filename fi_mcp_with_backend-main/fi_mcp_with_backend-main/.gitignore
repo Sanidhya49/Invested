@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# Environment variables
+*.env
+
+# VS Code settings
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Go build artifacts
+fi-mcp-dev/bin/
+fi-mcp-dev/*.exe
+fi-mcp-dev/*.out
+
+# Test data
+fi-mcp-dev/test_data_dir/*.json
+
+# Logs
+*.log
+
+# Python cache
+python-backend/__pycache__/
+python-

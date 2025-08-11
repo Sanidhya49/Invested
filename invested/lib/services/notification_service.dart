@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -46,7 +45,7 @@ class NotificationService {
       await _initializeLocalNotifications();
 
       // Get FCM token
-      String? token = await _firebaseMessaging.getToken();
+      final String? token = await _firebaseMessaging.getToken();
       if (token != null) {
         print('📱 FCM Token: $token');
         await _saveTokenToFirestore(token);
@@ -80,17 +79,17 @@ class NotificationService {
   }
 
   Future<void> _initializeLocalNotifications() async {
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    final AndroidInitializationSettings initializationSettingsAndroid =
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    const DarwinInitializationSettings initializationSettingsIOS =
-        DarwinInitializationSettings(
+    final DarwinInitializationSettings initializationSettingsIOS =
+        const DarwinInitializationSettings(
           requestAlertPermission: true,
           requestBadgePermission: true,
           requestSoundPermission: true,
         );
 
-    const InitializationSettings initializationSettings =
+    final InitializationSettings initializationSettings =
         InitializationSettings(
           android: initializationSettingsAndroid,
           iOS: initializationSettingsIOS,
@@ -106,8 +105,8 @@ class NotificationService {
   }
 
   Future<void> _createNotificationChannels() async {
-    const AndroidNotificationChannel guardianChannel =
-        AndroidNotificationChannel(
+    final AndroidNotificationChannel guardianChannel =
+        const AndroidNotificationChannel(
           'guardian_alerts',
           'Guardian Alerts',
           description: 'Security and monitoring alerts from Guardian agent',
@@ -116,8 +115,8 @@ class NotificationService {
           enableVibration: true,
         );
 
-    const AndroidNotificationChannel catalystChannel =
-        AndroidNotificationChannel(
+    final AndroidNotificationChannel catalystChannel =
+        const AndroidNotificationChannel(
           'catalyst_opportunities',
           'Catalyst Opportunities',
           description: 'Growth opportunities from Catalyst agent',
@@ -126,8 +125,8 @@ class NotificationService {
           enableVibration: true,
         );
 
-    const AndroidNotificationChannel strategistChannel =
-        AndroidNotificationChannel(
+    final AndroidNotificationChannel strategistChannel =
+        const AndroidNotificationChannel(
           'strategist_recommendations',
           'Strategist Recommendations',
           description: 'Investment recommendations from Strategist agent',
@@ -136,26 +135,28 @@ class NotificationService {
           enableVibration: true,
         );
 
-    const AndroidNotificationChannel oracleChannel = AndroidNotificationChannel(
-      'oracle_insights',
-      'Oracle Insights',
-      description: 'Financial insights from Oracle agent',
-      importance: Importance.low,
-      playSound: false,
-      enableVibration: false,
-    );
+    final AndroidNotificationChannel oracleChannel =
+        const AndroidNotificationChannel(
+          'oracle_insights',
+          'Oracle Insights',
+          description: 'Financial insights from Oracle agent',
+          importance: Importance.low,
+          playSound: false,
+          enableVibration: false,
+        );
 
-    const AndroidNotificationChannel goalsChannel = AndroidNotificationChannel(
-      'goal_updates',
-      'Goal Updates',
-      description: 'Updates about your financial goals',
-      importance: Importance.defaultImportance,
-      playSound: true,
-      enableVibration: true,
-    );
+    final AndroidNotificationChannel goalsChannel =
+        const AndroidNotificationChannel(
+          'goal_updates',
+          'Goal Updates',
+          description: 'Updates about your financial goals',
+          importance: Importance.defaultImportance,
+          playSound: true,
+          enableVibration: true,
+        );
 
-    const AndroidNotificationChannel securityChannel =
-        AndroidNotificationChannel(
+    final AndroidNotificationChannel securityChannel =
+        const AndroidNotificationChannel(
           'security_alerts',
           'Security Alerts',
           description: 'Critical security alerts',
@@ -224,7 +225,7 @@ class NotificationService {
       title: message.notification?.title ?? 'Invested',
       body: message.notification?.body ?? 'New notification',
       payload: json.encode(message.data),
-      channelId: message.data['category'] ?? 'general',
+      channelId: message.data['category'] ?? 'guardian_alerts',
     );
   }
 
@@ -261,23 +262,24 @@ class NotificationService {
     String? payload,
     required String channelId,
   }) async {
-    const AndroidNotificationDetails androidDetails =
+    final AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
-          'default_channel',
-          'Default Channel',
-          channelDescription: 'Default notification channel',
+          channelId,
+          'Notifications',
+          channelDescription: 'Invested notifications',
           importance: Importance.high,
           priority: Priority.high,
           showWhen: true,
         );
 
-    const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
+    final DarwinNotificationDetails iosDetails =
+        const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        );
 
-    const NotificationDetails details = NotificationDetails(
+    final NotificationDetails details = NotificationDetails(
       android: androidDetails,
       iOS: iosDetails,
     );
