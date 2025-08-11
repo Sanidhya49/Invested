@@ -1,316 +1,180 @@
-# 🚀 Invested - AI-Powered Personal Finance App
+# Invested Monorepo — Complete Setup & Run Guide
 
-> **Your intelligent financial companion powered by AI agents**
+End‑to‑end, multi‑service personal finance app powered by AI agents. This single guide combines everything you need to build and run the entire stack: Flutter app, Notification/REST backend, Go MCP server, and Python MCP proxy.
 
-Invested is a comprehensive personal finance application that combines the power of AI agents with real-time financial data to provide personalized insights, recommendations, and automated financial management.
-
-## 🌟 Features
-
-### 🤖 AI Agents
-- **Oracle**: Your personal finance assistant for questions and analysis
-- **Guardian**: Proactive alerts and security monitoring
-- **Catalyst**: Growth opportunities and investment recommendations
-- **Strategist**: Portfolio analysis and strategic advice
-
-### 📊 Financial Dashboard
-- Real-time net worth tracking
-- Asset and liability breakdown
-- Interactive charts and visualizations
-- Financial insights and trends
-
-### 📱 Subscription Management
-- Automatic subscription detection from bank transactions
-- Billing cycle tracking
-- Cost analysis and optimization suggestions
-- Payment reminders
-
-### 📈 Advanced Analytics
-- Multi-dimensional financial insights
-- Historical trend analysis
-- Customizable date ranges
-- Export capabilities
-
-## 🏗️ Architecture
+## Repository Layout
 
 ```
-invested/
-├── invested/                 # Flutter Mobile App (Frontend)
-│   ├── lib/
-│   │   ├── screens/         # UI Screens
-│   │   ├── widgets/         # Reusable Components
-│   │   └── main.dart        # App Entry Point
-│   ├── android/             # Android Platform
-│   ├── ios/                 # iOS Platform
-│   └── pubspec.yaml         # Flutter Dependencies
-├── backend/                 # FastAPI Backend (Python)
-│   ├── main.py             # API Server
-│   ├── requirements.txt    # Python Dependencies
-│   └── .venv/              # Virtual Environment
-└── README.md               # This File
+invested/                      # Monorepo root (this README)
+├─ invested/                   # Flutter app
+│  ├─ lib/
+│  ├─ android/
+│  ├─ ios/
+│  └─ pubspec.yaml
+├─ backend/                    # Notification/REST backend (FastAPI on 8000)
+│  ├─ main.py
+│  └─ requirements.txt
+└─ fi_mcp_with_backend-main/   # MCP server (Go) + Python proxy
+   └─ fi_mcp_with_backend-main/
+      ├─ fi-mcp-dev/           # Go MCP server (port 8080)
+      │  ├─ main.go
+      │  └─ test_data_dir/     # Dummy data per phone number
+      └─ python-backend/       # Python MCP backend (port 8001)
+         ├─ main.py
+         └─ requirements.txt
 ```
 
-## 🚀 Quick Start
+## Ports Matrix
 
-### Prerequisites
+- 8000: Notification/REST backend (`backend/`)
+- 8080: Go MCP server (`fi-mcp-dev/`)
+- 8001: Python MCP backend (`python-backend/`)
+- Android emulator access to localhost: use `http://10.0.2.2:<port>`
 
-- **Flutter SDK** (3.8.1 or higher)
-- **Python** (3.8 or higher)
-- **Firebase Account** (for authentication and database)
-- **Google Cloud Project** (for Vertex AI)
-- **MCP Server** (for financial data)
+## Prerequisites
 
-### 1. Clone the Repository
+- Flutter SDK 3.8+
+- Android Studio or VS Code with Flutter/Dart plugins
+- Python 3.10+
+- Go 1.23+
+- Firebase project (for the Flutter app)
+- Gemini API key (for MCP Python backend)
+
+## 1) Start Notification/REST Backend (port 8000)
+
+This is the backend the Flutter app talks to (e.g., notifications at `/send-notification`).
 
 ```bash
-git clone <repository-url>
-cd invested
-```
-
-### 2. Backend Setup
-
-```bash
-# Navigate to backend directory
 cd backend
-
-# Create virtual environment
 python -m venv .venv
-
-# Activate virtual environment
-# Windows:
-.venv\Scripts\activate
-# macOS/Linux:
+# macOS/Linux
 source .venv/bin/activate
-
-# Install dependencies
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your configuration
-
-# Run the backend server
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 3. Frontend Setup
+## 2) Start Go MCP Server (port 8080)
+
+The MCP server exposes:
+- `/mockWebPage?sessionId=...` — simple login page
+- `/login` — POST form `{ sessionId, phoneNumber }` (phone numbers must exist as folders in `test_data_dir/`)
+- `/mcp/stream` — tool invocations, requires header `X-Session-ID: <sessionId>` previously registered via `/login`
 
 ```bash
-# Navigate to Flutter app directory
-cd invested
+cd fi_mcp_with_backend-main/fi_mcp_with_backend-main/fi-mcp-dev
+go mod tidy
+# macOS/Linux
+FI_MCP_PORT=8080 go run .
+# Windows PowerShell
+$env:FI_MCP_PORT="8080"; go run .
+```
 
-# Install Flutter dependencies
+## 3) Start Python MCP Backend (port 8001)
+
+Proxies to the Go server and manages a global MCP session at startup.
+
+```bash
+cd fi_mcp_with_backend-main/fi_mcp_with_backend-main/python-backend
+python -m venv .venv
+# macOS/Linux
+source .venv/bin/activate
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+
+# Create .env
+# On Windows PowerShell:
+"GEMINI_API_KEY=your_gemini_api_key" | Out-File -Encoding utf8 .env
+"FI_MCP_SERVER_URL=http://localhost:8080" | Out-File -Append -Encoding utf8 .env
+"MCP_AUTH_PHONE_NUMBER=2222222222" | Out-File -Append -Encoding utf8 .env
+
+# On macOS/Linux instead:
+# cat > .env << 'EOF'
+# GEMINI_API_KEY=your_gemini_api_key
+# FI_MCP_SERVER_URL=http://localhost:8080
+# MCP_AUTH_PHONE_NUMBER=2222222222
+# EOF
+
+uvicorn main:app --port 8001 --reload
+```
+
+On startup it should print: “Successfully obtained global MCP session: backend_session_…”.
+
+## 4) Run the Flutter App
+
+```bash
+cd invested/invested
 flutter pub get
-
-# Run the app
 flutter run
 ```
 
-## 🔧 Configuration
+### Android notes (local notifications, Firebase Messaging)
+- Already configured: core library desugaring and notification channels.
+- If you see desugaring errors, ensure `invested/android/app/build.gradle.kts` has:
+  - `compileOptions { isCoreLibraryDesugaringEnabled = true }`
+  - `dependencies { coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4") }`
+- Emulator to host: use `http://10.0.2.2:<port>`.
+
+### Backend endpoints used by the Flutter app
+- Notification send: `POST http://10.0.2.2:8000/send-notification`
+  - Body includes `token`, `title`, `body`, `category`, `data`
+
+## Typical Local Workflow
+
+1. Start 8000 (Notification/REST) → Start 8080 (Go MCP) → Start 8001 (Python MCP) → Run Flutter app
+2. If the Flutter app needs the MCP login page, open `http://10.0.2.2:8080/mockWebPage?sessionId=<YOUR_SESSION>` in the emulator; submit an allowed phone number (a folder in `fi-mcp-dev/test_data_dir/`).
+3. To use the MCP endpoints through the Python backend, call its endpoints (e.g., `POST /process_agent_request`) so it reuses the global session established at startup.
+
+## Configuration
 
 ### Firebase Setup
-
 1. Create a Firebase project
 2. Enable Authentication and Firestore
 3. Download `google-services.json` and place it in `invested/android/app/`
-4. Download Firebase service account JSON and place it in `backend/`
-
-### Google Cloud Setup
-
-1. Create a Google Cloud project
-2. Enable Vertex AI API
-3. Create a service account with Vertex AI permissions
-4. Download the service account key and place it in `backend/`
 
 ### MCP Server Setup
+1. Go server runs on `8080` and exposes `/mockWebPage`, `/login`, `/mcp/stream`.
+2. Python backend proxies to it on `8001` and sets up a global MCP session at startup.
+3. Flutter app should open the login web page on the Go MCP port (`http://10.0.2.2:8080/...`) if doing a client‑side login.
 
-1. Set up the MCP server for financial data
-2. Configure the server URL in `backend/main.py`
-3. Ensure the server provides the required financial data endpoints
+## Troubleshooting
 
-## 📱 App Screens
+- 404 for `/mockWebPage`
+  - You are hitting the wrong port. The login page is served by the Go MCP server (8080), not the Python backend.
+- "Session NOT FOUND" in MCP logs
+  - The `X-Session-ID` used for `/mcp/stream` was not registered via `/login`. Reuse the same session ID for both steps, or always go through the Python MCP backend which manages a single global session.
+- Port already in use
+  - Change `FI_MCP_PORT` for the Go server and update `FI_MCP_SERVER_URL` in the Python MCP backend accordingly.
+- Android cannot reach localhost
+  - Use `http://10.0.2.2:<port>` from the emulator.
 
-### Dashboard
-- Financial overview with net worth
-- Quick access to all features
-- Real-time data updates
+## Environment Variables
 
-### Oracle Chat
-- AI-powered financial assistant
-- Natural language queries
-- Personalized responses
-
-### Guardian Alerts
-- Security notifications
-- Financial health alerts
-- Proactive recommendations
-
-### Catalyst Opportunities
-- Investment opportunities
-- Growth recommendations
-- Risk assessment
-
-### Strategist Analysis
-- Portfolio analysis
-- Strategic recommendations
-- Market insights
-
-### Insights
-- Interactive charts
-- Financial analytics
-- Custom date ranges
-
-### Subscriptions
-- Auto-detected subscriptions
-- Billing cycle management
-- Cost optimization
-
-## 🔌 API Endpoints
-
-### Authentication
-- `POST /start-fi-auth` - Initialize FI authentication
-
-### User Data
-- `GET /get-user-data` - Fetch user's financial summary
-- `GET /get-subscriptions` - Fetch subscription data
-
-### AI Agents
-- `POST /ask-oracle` - Oracle AI assistant
-- `POST /run-guardian` - Guardian alerts
-- `POST /run-catalyst` - Catalyst opportunities
-- `POST /run-strategist` - Strategist analysis
-
-### Health
-- `GET /health` - Server health check
-
-## 🛠️ Development
-
-### Backend Development
-
-```bash
-cd backend
-# Activate virtual environment
-source .venv/bin/activate  # or .venv\Scripts\activate on Windows
-
-# Install development dependencies
-pip install -r requirements.txt
-
-# Run with auto-reload
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-
-# Run tests
-pytest
-
-# Format code
-black main.py
-```
-
-### Frontend Development
-
-```bash
-cd invested
-
-# Install dependencies
-flutter pub get
-
-# Run in debug mode
-flutter run
-
-# Run tests
-flutter test
-
-# Build for production
-flutter build apk --release
-```
-
-### Code Structure
-
-#### Backend (`backend/`)
-- `main.py` - FastAPI application with all endpoints
-- `requirements.txt` - Python dependencies
-- `.env` - Environment variables (not in git)
-
-#### Frontend (`invested/`)
-- `lib/screens/` - App screens and UI
-- `lib/widgets/` - Reusable UI components
-- `pubspec.yaml` - Flutter dependencies
-
-## 🔒 Security
-
-- Firebase Authentication for user management
-- Secure API endpoints with token validation
-- Environment variables for sensitive data
-- HTTPS enforcement in production
-
-## 📊 Data Sources
-
-- **Bank Transactions**: Via MCP server
-- **Credit Reports**: Via MCP server
-- **Investment Data**: Via MCP server
-- **EPF Details**: Via MCP server
-- **Stock Transactions**: Via MCP server
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Guidelines
-
-- Follow Flutter/Dart coding standards
-- Use meaningful commit messages
-- Add tests for new features
-- Update documentation as needed
-- Don't commit sensitive data or credentials
-
-## 📝 Environment Variables
-
-### Backend (`.env`)
+### Python MCP backend (`fi_mcp_with_backend-main/.../python-backend/.env`)
 ```env
-GOOGLE_APPLICATION_CREDENTIALS=path/to/service-account.json
-FIREBASE_SERVICE_ACCOUNT=path/to/firebase-service-account.json
-MCP_SERVER_URL=http://localhost:8080
+GEMINI_API_KEY=your_gemini_api_key
+FI_MCP_SERVER_URL=http://localhost:8080
+MCP_AUTH_PHONE_NUMBER=2222222222
 ```
 
-### Frontend
-- Firebase configuration in `google-services.json`
-- API base URL in app configuration
+### Notification/REST backend (`backend/.env` if applicable)
+```env
+# Example — adapt to your backend
+FIREBASE_PROJECT_ID=...
+FIREBASE_CREDENTIALS_JSON=...  # or GOOGLE_APPLICATION_CREDENTIALS=path/to/key.json
+```
 
-## 🚀 Deployment
+## Data
 
-### Backend Deployment
-1. Set up a cloud server (AWS, GCP, Azure)
-2. Install Python and dependencies
-3. Configure environment variables
-4. Use a process manager (PM2, systemd)
-5. Set up reverse proxy (Nginx)
+- Dummy financial data is stored in `fi-mcp-dev/test_data_dir/<phone_number>/*.json`.
+- Allowed phone numbers are the directory names in `test_data_dir/`.
 
-### Frontend Deployment
-1. Build the Flutter app for target platforms
-2. Deploy to app stores (Google Play, App Store)
-3. Configure Firebase for production
+## License
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Flutter team for the amazing framework
-- FastAPI for the high-performance backend
-- Firebase for authentication and database
-- Google Cloud for AI services
-- MCP community for financial data integration
-
-## 📞 Support
-
-For support and questions:
-- Create an issue in the repository
-- Contact the development team
-- Check the documentation
+MIT — see `LICENSE`.
 
 ---
 
-**Made with ❤️ by the Invested Team** 
+Made by Invested team
