@@ -173,8 +173,8 @@ FIREBASE_CREDENTIALS_JSON=...  # or GOOGLE_APPLICATION_CREDENTIALS=path/to/key.j
 
 ## License
 
-MIT — see `LICENSE`.
+see `LICENSE`.
 
 ---
 
-Made by Invested team
+Made by Hacktic team
