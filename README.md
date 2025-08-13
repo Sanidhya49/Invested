@@ -177,4 +177,4 @@ see `LICENSE`.
 
 ---
 
-Made by Hacktic team
+Made by team "Hacktic"
