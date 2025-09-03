@@ -1,0 +1,17 @@
+# Node.js
+node_modules/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# VSCode
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Other
+sun_git/

@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+httpx
+python-jose[cryptography]
+passlib[bcrypt]
+google-generativeai
+python-dotenv
+firebase-admin
+google-cloud-aiplatform
+pandas
+numpy
+reportlab

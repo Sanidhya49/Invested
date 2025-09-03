@@ -1,0 +1,11 @@
+# Google Cloud credentials
+service-account-key.json
+
+# Environment variables
+.env
+
+# Python artifacts
+__pycache__/
+*.pyc
+.venv/
+venv/

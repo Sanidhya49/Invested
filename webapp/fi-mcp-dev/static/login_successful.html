@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fi MCP - Authentication Successful</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            color: #20d4aa;
+        }
+        
+        .success-card {
+            background: rgba(45, 45, 45, 0.8);
+            border-radius: 16px;
+            padding: 60px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #20d4aa 0%, #1bc4a0 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            animation: scaleIn 0.6s ease-out 0.3s both;
+        }
+        
+        .success-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            line-height: 1.3;
+            animation: slideUp 0.6s ease-out 0.5s both;
+        }
+        
+        .success-subtitle {
+            color: #b0b0b0;
+            font-size: 16px;
+            margin-bottom: 40px;
+            animation: slideUp 0.6s ease-out 0.7s both;
+        }
+        
+        .next-steps {
+            background: rgba(32, 212, 170, 0.1);
+            border: 1px solid rgba(32, 212, 170, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            animation: slideUp 0.6s ease-out 0.9s both;
+        }
+        
+        .next-steps-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #20d4aa;
+        }
+        
+        .next-steps-text {
+            color: #b0b0b0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .success-card {
+                padding: 40px 20px;
+            }
+            
+            .success-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <span style="color: #20d4aa;">Fi</span>
+            <span style="color: #ffffff;">MCP</span>
+            <span style="color: #888; font-size: 12px; font-weight: normal;">BETA</span>
+        </div>
+        
+        <div class="success-card">
+            <div class="success-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20,6 9,17 4,12"/>
+                </svg>
+            </div>
+            
+            <h2 class="success-title">Login Successful!</h2>
+            <p class="success-subtitle">You can now close this window and return to your application.</p>
+            
+            <div class="next-steps">
+                <div class="next-steps-title">What's Next?</div>
+                <div class="next-steps-text">
+                    Open your preferred AI assistant and start asking questions about your financial portfolio, investments, and net worth. Your data is now securely connected!
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
